@@ -4,7 +4,7 @@ from typing import Any
 
 import numpy as np
 import supervision as sv
-from autodistill_grounded_sam.helpers import load_SAM
+from autodistill_grounded_sam_2.helpers import load_SAM
 from autodistill.helpers import load_image
 
 from autodistill.detection import CaptionOntology, DetectionBaseModel
