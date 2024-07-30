@@ -9,25 +9,22 @@
   </p>
 </div>
 
-# Autodistill: GroundedSAM Base Model
+# Autodistill: Grounded SAM 2 Base Model
 
-This repository contains the code implementing [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Anything) as a Base Model for use with [`autodistill`](https://github.com/autodistill/autodistill).
+This repository contains the code implementing Grounded SAM 2 using Florence-2 as a grounding model and Segment Anything 2 as a segmentation model for use with [`autodistill`](https://github.com/autodistill/autodistill).
 
-GroundedSAM combines [GroundingDINO](https://github.com/IDEA-Research/GroundingDINO) with the [Segment Anything Model](https://github.com/facebookresearch/segment-anything) to identify and segment objects in an image given text captions.
+Florence-2 is a zero-shot multimodal model. You can use Florence-2 for open vocabulary object detection. This project uses the object detection capabilities in Florence-2 to ground the SAM 2 model.
 
 Read the full [Autodistill documentation](https://autodistill.github.io/autodistill/).
 
-Read the [GroundedSAM Autodistill documentation](https://autodistill.github.io/autodistill/base_models/groundedsam/).
-
-> [!TIP]
-> You can use Autodistill Grounded SAM on your own hardware using the instructions below, or use the [Roboflow hosted version of Autodistill](https://blog.roboflow.com/launch-auto-label/) to label images in the cloud.
+Read the [Grounded SAM 2 Autodistill documentation](https://autodistill.github.io/autodistill/base_models/grounded-sam-2/).
 
 ## Installation
 
 To use the GroundedSAM Base Model, simply install it along with a Target Model supporting the `detection` task:
 
 ```bash
-pip3 install autodistill-grounded-sam autodistill-yolov8
+pip3 install autodistill-grounded-sam-2 autodistill-yolov8
 ```
 
 You can find a full list of `detection` Target Models on [the main autodistill repo](https://github.com/autodistill/autodistill).
@@ -35,17 +32,17 @@ You can find a full list of `detection` Target Models on [the main autodistill r
 ## Quickstart
 
 ```python
-from autodistill_grounded_sam import GroundedSAM
+from autodistill_grounded_sam_2 import GroundedSAM2
 from autodistill.detection import CaptionOntology
 from autodistill.utils import plot
 import cv2
 
-# define an ontology to map class names to our GroundedSAM prompt
+# define an ontology to map class names to our Grounded SAM 2 prompt
 # the ontology dictionary has the format {caption: class}
 # where caption is the prompt sent to the base model, and class is the label that will
 # be saved for that caption in the generated annotations
 # then, load the model
-base_model = GroundedSAM(
+base_model = GroundedSAM2(
     ontology=CaptionOntology(
         {
             "person": "person",
