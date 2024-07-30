@@ -12,7 +12,7 @@ if not torch.cuda.is_available():
 
 
 def load_SAM():
-    cur_dir = os.path.dirname(os.path.realpath(__file__))
+    cur_dir = os.getcwd()
 
     AUTODISTILL_CACHE_DIR = os.path.expanduser("~/.cache/autodistill")
     SAM_CACHE_DIR = os.path.join(AUTODISTILL_CACHE_DIR, "segment_anything_2")
