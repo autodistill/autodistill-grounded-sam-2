@@ -1,11 +1,7 @@
 import os
 import urllib.request
 
-import numpy as np
-import supervision as sv
 import torch
-from groundingdino.util.inference import Model
-from segment_anything import SamPredictor, sam_model_registry
 import subprocess
 import sys
 
