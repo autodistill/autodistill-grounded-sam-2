@@ -70,19 +70,6 @@ def load_SAM():
 
     os.chdir(SAM_CACHE_DIR)
 
-    if not os.path.isdir("~/.cache/autodistill/segment_anything_2/segment-anything-2"):
-        subprocess.run(
-            [
-                "git",
-                "clone",
-                "https://github.com/facebookresearch/segment-anything-2.git",
-            ]
-        )
-
-        os.chdir("segment-anything-2")
-
-        subprocess.run(["pip", "install", "-e", "."])
-
     sys.path.append("~/.cache/autodistill/segment_anything_2/segment-anything-2")
 
     # Download the file if it doesn't exist
