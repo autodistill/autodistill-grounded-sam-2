@@ -25,7 +25,6 @@ SUPPORTED_GROUNDING_MODELS = ["Florence 2", "Grounding DINO"]
 @dataclass
 class GroundedSAM2(DetectionBaseModel):
     ontology: CaptionOntology
-    florence_2_predictor: Florence2
     box_threshold: float
     text_threshold: float
 
