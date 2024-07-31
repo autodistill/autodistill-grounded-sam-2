@@ -29,7 +29,7 @@ class GroundedSAM2(DetectionBaseModel):
     box_threshold: float
     text_threshold: float
 
-    def __init__(self, ontology: CaptionOntology, model = "Florence 2"):
+    def __init__(self, ontology: CaptionOntology, model = "Florence 2", grounding_dino_box_threshold = 0.35, grounding_dino_text_threshold = 0.25):
         if model not in SUPPORTED_GROUNDING_MODELS:
             raise ValueError(f"Grounding model {model} is not supported. Supported models are {SUPPORTED_GROUNDING_MODELS}")
         
@@ -40,6 +40,8 @@ class GroundedSAM2(DetectionBaseModel):
             self.grounding_dino_model = load_grounding_dino()
         self.sam_2_predictor = SamPredictor
         self.model = model
+        self.grounding_dino_box_threshold = grounding_dino_box_threshold
+        self.grounding_dino_text_threshold = grounding_dino_text_threshold
 
     def predict(self, input: Any) -> sv.Detections:
         image = load_image(input, return_format="cv2")
@@ -55,8 +57,8 @@ class GroundedSAM2(DetectionBaseModel):
                 detections = self.grounding_dino_model.predict_with_classes(
                     image=image,
                     classes=[description],
-                    box_threshold=self.box_threshold,
-                    text_threshold=self.text_threshold,
+                    box_threshold=self.grounding_dino_box_threshold,
+                    text_threshold=self.grounding_dino_text_threshold,
                 )
 
                 detections_list.append(detections)
