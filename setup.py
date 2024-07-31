@@ -3,13 +3,7 @@ from setuptools import find_packages
 import subprocess
 import sys
 import re
-
-# groundingdino needs torch to be installed before it can be installed
-# this is a hack but couldn't find any other way to make it work
-try:
-    import torch
-except:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", 'torch'])
+import os
 
 with open("./autodistill_grounded_sam_2/__init__.py", 'r') as f:
     content = f.read()
@@ -18,9 +12,6 @@ with open("./autodistill_grounded_sam_2/__init__.py", 'r') as f:
     
 with open("README.md", "r") as fh:
     long_description = fh.read()
-    
-with open("requirements.txt", "r") as fh:
-    install_requires = fh.read().split('\n')
 
 setuptools.setup(
     name="autodistill_grounded_sam_2", 
@@ -31,7 +22,15 @@ setuptools.setup(
     long_description=" Use Segment Anything 2, grounded with Florence-2, to auto-label data for use in training vision models. ",
     long_description_content_type="text/markdown",
     url="https://github.com/autodistill/autodistill-grounded-sam-2",
-    install_requires=install_requires,
+    install_requires=[
+        "torch",
+        "autodistill",
+        "numpy>=1.20.0",
+        "opencv-python>=4.6.0",
+        "supervision",
+        "roboflow",
+        "autodistill_florence_2",
+    ],
     packages=find_packages(exclude=("tests",)),
     extras_require={
         "dev": ["flake8", "black==22.3.0", "isort", "twine", "pytest", "wheel"],
