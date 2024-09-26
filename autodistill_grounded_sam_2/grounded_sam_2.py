@@ -29,6 +29,8 @@ from autodistill_grounded_sam_2.utils.utils import (
     extract_frames,
     get_dir_names,
     get_frames_for_sam,
+    make_temp_dir,
+    remove_temp_dir,
 )
 
 HOME = os.path.expanduser("~")
@@ -125,7 +127,7 @@ class GroundedSAM2(DetectionBaseModel):
         grounding_dino_model = load_grounding_dino()
         PROMPT_TYPE_FOR_VIDEO = "mask"
         objects_count = 0
-
+        make_temp_dir()
         for start_frame_idx in range(0, len(frame_names), step):
             img_path = os.path.join(video_dir, frame_names[start_frame_idx])
             image = Image.open(img_path)
@@ -281,6 +283,7 @@ class GroundedSAM2(DetectionBaseModel):
         detections, labels = create_sv_detections(
             video_dir, mask_data_dir, json_data_dir, result_dir
         )
+        remove_temp_dir()
         return detections
 
     def predict(self, input: str) -> sv.Detections:
