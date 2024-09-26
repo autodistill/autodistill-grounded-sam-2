@@ -88,7 +88,7 @@ def load_SAM():
     sys.path.append("~/.cache/autodistill/segment_anything_2/segment-anything-2")
 
     # Download the file if it doesn't exist
-    if not os.path.isfile(SAM_CHECKPOINT_PATH):
+    if not os.path.exists(SAM_CHECKPOINT_PATH):
         urllib.request.urlretrieve(url, SAM_CHECKPOINT_PATH)
 
     from sam2.build_sam import build_sam2, build_sam2_video_predictor
