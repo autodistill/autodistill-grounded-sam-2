@@ -270,7 +270,7 @@ def get_dir_names():
     mask_data_dir = os.path.join(output_dir, "mask_data")
     json_data_dir = os.path.join(output_dir, "json_data")
     result_dir = os.path.join(output_dir, "result")
-    video_dir = "videos"
+    video_dir = os.path.join(output_dir, "video")
     return output_dir, mask_data_dir, json_data_dir, result_dir, video_dir
 
 

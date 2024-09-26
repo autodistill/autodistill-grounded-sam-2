@@ -114,8 +114,7 @@ class GroundedSAM2(DetectionBaseModel):
 
     def _predict_video(self, input: str) -> sv.Detections:
         # parts of the video code is from https://github.com/IDEA-Research/Grounded-SAM-2/tree/main
-        video_dir = "videos"
-        output_dir, mask_data_dir, json_data_dir, result_dir = get_dir_names()
+        _, mask_data_dir, json_data_dir, result_dir, video_dir = get_dir_names()
         extract_frames(input, video_dir)
         frame_names = get_frames_for_sam(video_dir)
         image_predictor, video_predictor = load_SAM()
