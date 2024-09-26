@@ -260,7 +260,7 @@ def extract_frames(video_name, video_dir):
         ret, frame = cap.read()
         if not ret:
             break
-        cv2.imwrite(os.path.join(video_dir, f"{i}.png"), frame)
+        cv2.imwrite(os.path.join(video_dir, f"{i}.jpg"), frame)
         i += 1
     cap.release()
 
