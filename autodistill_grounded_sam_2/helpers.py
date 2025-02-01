@@ -2,16 +2,17 @@ import os
 import subprocess
 import sys
 import urllib.request
-from groundingdino.util.inference import Model
 
-import torch
 import numpy as np
 import supervision as sv
+import torch
+from groundingdino.util.inference import Model
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if not torch.cuda.is_available():
     print("WARNING: CUDA not available. GroundingDINO will run very slowly.")
+
 
 def load_grounding_dino():
     AUTODISTILL_CACHE_DIR = os.path.expanduser("~/.cache/autodistill")
@@ -56,12 +57,16 @@ def load_grounding_dino():
 
         return grounding_dino_model
 
+
 def load_SAM():
     cur_dir = os.getcwd()
 
     AUTODISTILL_CACHE_DIR = os.path.expanduser("~/.cache/autodistill")
     SAM_CACHE_DIR = os.path.join(AUTODISTILL_CACHE_DIR, "segment_anything_2")
     SAM_CHECKPOINT_PATH = os.path.join(SAM_CACHE_DIR, "sam2_hiera_base_plus.pth")
+
+    SAM_REPOSITORY_NAME = "segment-anything-2"
+    SAM_REPOSITORY_DIR = os.path.join(SAM_CACHE_DIR, SAM_REPOSITORY_NAME)
 
     url = "https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_base_plus.pt"
 
@@ -70,7 +75,7 @@ def load_SAM():
 
     os.chdir(SAM_CACHE_DIR)
 
-    if not os.path.isdir("~/.cache/autodistill/segment_anything_2/segment-anything-2"):
+    if not os.path.isdir(SAM_REPOSITORY_DIR):
         subprocess.run(
             [
                 "git",
@@ -79,11 +84,11 @@ def load_SAM():
             ]
         )
 
-        os.chdir("segment-anything-2")
+        os.chdir(SAM_REPOSITORY_NAME)
 
         subprocess.run(["pip", "install", "-e", "."])
 
-    sys.path.append("~/.cache/autodistill/segment_anything_2/segment-anything-2")
+    sys.path.append(SAM_REPOSITORY_DIR)
 
     # Download the file if it doesn't exist
     if not os.path.isfile(SAM_CHECKPOINT_PATH):
@@ -92,15 +97,12 @@ def load_SAM():
     from sam2.build_sam import build_sam2
     from sam2.sam2_image_predictor import SAM2ImagePredictor
 
-    checkpoint = "~/.cache/autodistill/segment_anything_2/sam2_hiera_base_plus.pth"
-    checkpoint = os.path.expanduser(checkpoint)
     model_cfg = "sam2_hiera_b+.yaml"
-    predictor = SAM2ImagePredictor(build_sam2(model_cfg, checkpoint))
+    predictor = SAM2ImagePredictor(build_sam2(model_cfg, SAM_CHECKPOINT_PATH))
 
     os.chdir(cur_dir)
 
     return predictor
-
 
 
 def combine_detections(detections_list, overwrite_class_ids):
@@ -156,4 +158,3 @@ def combine_detections(detections_list, overwrite_class_ids):
         class_id=class_id,
         tracker_id=tracker_id,
     )
-
