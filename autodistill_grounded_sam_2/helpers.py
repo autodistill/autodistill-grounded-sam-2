@@ -2,16 +2,17 @@ import os
 import subprocess
 import sys
 import urllib.request
-from groundingdino.util.inference import Model
 
-import torch
 import numpy as np
 import supervision as sv
+import torch
+from groundingdino.util.inference import Model
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if not torch.cuda.is_available():
     print("WARNING: CUDA not available. GroundingDINO will run very slowly.")
+
 
 def load_grounding_dino():
     AUTODISTILL_CACHE_DIR = os.path.expanduser("~/.cache/autodistill")
@@ -55,6 +56,7 @@ def load_grounding_dino():
         # grounding_dino_model.to(DEVICE)
 
         return grounding_dino_model
+
 
 def load_SAM():
     cur_dir = os.getcwd()
@@ -101,7 +103,6 @@ def load_SAM():
     os.chdir(cur_dir)
 
     return predictor
-
 
 
 def combine_detections(detections_list, overwrite_class_ids):
@@ -157,4 +158,3 @@ def combine_detections(detections_list, overwrite_class_ids):
         class_id=class_id,
         tracker_id=tracker_id,
     )
-
