@@ -42,7 +42,16 @@ class GroundedSAM2(DetectionBaseModel):
         self.grounding_dino_box_threshold = grounding_dino_box_threshold
         self.grounding_dino_text_threshold = grounding_dino_text_threshold
 
-    def predict(self, input: Any) -> sv.Detections:
+    def predict(self, input: Any, points: list = None, point_labels: list = None) -> sv.Detections:
+        """
+        Run prediction on an image. Optionally, segment using point prompts.
+        Args:
+            input: Image path or array.
+            points: Optional[List[List[float]]], list of [x, y] points for point prompt.
+            point_labels: Optional[List[int]], 1 for foreground, 0 for background for each point.
+        Returns:
+            sv.Detections with masks.
+        """
         image = load_image(input, return_format="cv2")
 
         if self.model == "Florence 2":
@@ -69,13 +78,26 @@ class GroundedSAM2(DetectionBaseModel):
         with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
             self.sam_2_predictor.set_image(image)
             result_masks = []
-            for box in detections.xyxy:
+            if points is not None and point_labels is not None:
+                # Use point prompt for segmentation
                 masks, scores, _ = self.sam_2_predictor.predict(
-                    box=box, multimask_output=False
+                    point_coords=np.array(points),
+                    point_labels=np.array(point_labels),
+                    multimask_output=False
                 )
                 index = np.argmax(scores)
                 masks = masks.astype(bool)
                 result_masks.append(masks[index])
+                # For point prompt, detections may not have boxes, so create a dummy box
+                detections.xyxy = np.array([[0, 0, image.shape[1], image.shape[0]]])
+            else:
+                for box in detections.xyxy:
+                    masks, scores, _ = self.sam_2_predictor.predict(
+                        box=box, multimask_output=False
+                    )
+                    index = np.argmax(scores)
+                    masks = masks.astype(bool)
+                    result_masks.append(masks[index])
 
         detections.mask = np.array(result_masks)
 
